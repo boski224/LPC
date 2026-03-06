@@ -1,0 +1,87 @@
+# ...
+# ──────────────────────────────────────────
+# SSH agent recovery
+# ──────────────────────────────────────────
+ssh-fix() {
+    echo "==> Current SSH_AUTH_SOCK: ${SSH_AUTH_SOCK:-<not set>}"
+    echo "==> Current keys loaded:"
+    ssh-add -l 2>/dev/null || echo "    (none or agent not reachable)"
+
+    echo ""
+    echo "==> Searching for available SSH agent sockets in /tmp..."
+    local sockets=()
+    while IFS= read -r s; do
+        sockets+=("$s")
+    done < <(find /tmp/ssh-* -name "agent.*" 2>/dev/null | sort)
+
+    if [[ ${#sockets[@]} -eq 0 ]]; then
+        echo "    No SSH agent sockets found. Start one with: eval \$(ssh-agent)"
+        return 1
+    fi
+
+    echo "    Found ${#sockets[@]} socket(s):"
+    local best_sock=""
+    local best_count=-1
+    for s in "${sockets[@]}"; do
+        local count
+        count=$(SSH_AUTH_SOCK="$s" ssh-add -l 2>/dev/null | grep -c "^[0-9]" || true)
+        echo "      $s  (keys loaded: $count)"
+        if (( count > best_count )); then
+            best_count=$count
+            best_sock="$s"
+        fi
+    done
+
+    echo ""
+    if [[ -n "$best_sock" ]]; then
+        export SSH_AUTH_SOCK="$best_sock"
+        echo "==> SSH_AUTH_SOCK set to: $SSH_AUTH_SOCK"
+        echo "==> Keys now available:"
+        ssh-add -l
+    else
+        echo "==> Could not find a working SSH agent socket."
+        return 1
+    fi
+}
+
+# ──────────────────────────────────────────
+# Directory stack (last 5 visited)
+# ──────────────────────────────────────────
+DIR_STACK=()
+MAX_DIR_STACK=5
+
+cd() {
+    builtin cd "$@" || return
+    # Remove duplicate if already in stack
+    local new_dir="$PWD"
+    DIR_STACK=("${DIR_STACK[@]/$new_dir}")
+    # Remove empty entries
+    local cleaned=()
+    for d in "${DIR_STACK[@]}"; do
+        [[ -n "$d" ]] && cleaned+=("$d")
+    done
+    DIR_STACK=("${cleaned[@]}")
+    # Prepend new directory
+    DIR_STACK=("$new_dir" "${DIR_STACK[@]}")
+    # Trim to max size
+    DIR_STACK=("${DIR_STACK[@]:0:$MAX_DIR_STACK}")
+}
+
+# Show last 5 visited directories
+dirs_history() {
+    echo "Recent directories:"
+    for i in "${!DIR_STACK[@]}"; do
+        echo "  [$i] ${DIR_STACK[$i]}"
+    done
+}
+
+# Jump to a directory from the stack by index
+cdd() {
+    local index="${1:-0}"
+    if [[ -n "${DIR_STACK[$index]}" ]]; then
+        builtin cd "${DIR_STACK[$index]}" || return
+    else
+        echo "No directory at index $index"
+    fi
+}
+

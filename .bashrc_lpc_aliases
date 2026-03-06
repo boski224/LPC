@@ -1,0 +1,54 @@
+# ~/.bashrc_lpc_aliases
+
+# ──────────────────────────────────────────
+# Vim as default editor
+# ──────────────────────────────────────────
+export EDITOR=vim
+export VISUAL=vim
+
+# ──────────────────────────────────────────
+# Vim mode in bash (readline)
+# ──────────────────────────────────────────
+set -o vi
+
+# ──────────────────────────────────────────
+# Aliases
+# ──────────────────────────────────────────
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias '..' = 'cd ..'
+alias '...' = 'cd ../..'
+alias h='history'
+alias j='jobs'
+alias v='vim'
+alias grep='grep --color=auto'
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias clr='clear'
+alias py='python3'
+alias ip='ip addr'
+alias ping='ping -c 5'
+alias top='htop'
+alias reload='source ~/.bashrc'
+
+# Git aliases:
+alias gstat='git status' # gs is reserved by the system gst is a software, so using gstat for git status
+alias gadd='git add'
+alias gcommit='git commit'
+alias gdiff='git diff'
+alias gpush='git push' # Avoid conflict with system 'gp' command
+alias gpull='git pull' # Avoid conflict with system 'gl' command
+alias glog='git log --oneline -10'
+alias gbranch='git branch'
+alias gch='git checkout'
+
+# Miscellaneous aliases:
+alias fix-ssh='ssh-fix'
+alias cls='clear'
+alias update='sudo apt update && sudo apt upgrade -y'
+alias mkdir='mkdir -p' # Create parent directories as needed
+alias cp='cp -i' # Prompt before overwriting
+alias mv='mv -i' # Prompt before overwriting
+alias rm='rm -i' # Prompt before deleting
