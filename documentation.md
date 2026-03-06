@@ -1,34 +1,48 @@
 # LPC — Linux Personal Configs
 
-Personal shell environment customizations stored in separate files and wired into the system *rc files non-destructively via a loader script.
+Personal shell environment customizations stored in separate files, deployed to `~/.lpc/`, and wired into the system *rc files non-destructively via a loader script.
 
 ---
 
 ## Purpose
 
 Keep personal aliases, functions, and editor settings **outside** of the original system *rc files (`~/.bashrc`, `~/.vimrc`, `~/.screenrc`, etc.).  
-The original files are never modified manually — the loader script appends a single `source` line to each one.
+The original files are never modified manually — the loader script appends a single `source` line pointing to `~/.lpc/` into each one.  
+All LPC dotfiles live permanently in `~/.lpc/` so source paths are stable regardless of where the repo was cloned.
 
 ---
 
 ## Repository Structure
 
 ```
+# Before running lpc_loader.sh (repo can be cloned anywhere)
 LPC/
-├── lpc_loader.sh                   # Installer — wires LPC files into *rc files
-├── .bashrc_lpc_aliases             # Aliases, editor settings, directory stack
+├── lpc_loader.sh                   # Installer
+├── .bashrc_lpc_aliases             # Aliases, editor settings
 ├── .bashrc_lpc_functions           # Shell functions (SSH fix, dir navigation)
-├── .vimrc_lpc                      # Personal Vim settings (extend as needed)
+├── .vimrc_lpc                      # Personal Vim settings
 ├── .screenrc_lpc                   # Personal GNU Screen settings
-├── rc_files_origins/               # Backup copies of original *rc files
-│   ├── .bashrc
-│   ├── .bash_profile
-│   ├── .bash_aliases
-│   ├── .bash_history
-│   ├── .vimrc
-│   └── .screenrc
+├── .gitignore                      # Excludes rc_files_origins/ from git
+├── lpcNotesandIdeas.md             # Scratch notes and ideas
 └── documentation.md                # This file
-└── .gitignore                      # Excludes rc_files_origins/ from git
+
+# After running lpc_loader.sh (repo moved here by the script)
+~/.lpc/
+├── lpc_loader.sh
+├── .bashrc_lpc_aliases
+├── .bashrc_lpc_functions
+├── .vimrc_lpc
+├── .screenrc_lpc
+├── .gitignore
+├── lpcNotesandIdeas.md
+├── documentation.md
+└── rc_files_origins/               # Created by lpc_loader.sh — gitignored
+    ├── .bashrc
+    ├── .bash_profile
+    ├── .bash_aliases
+    ├── .bash_history
+    ├── .vimrc
+    └── .screenrc
 ```
 
 ---
@@ -43,13 +57,13 @@ bash lpc_loader.sh
 
 What it does:
 
-| Target file        | Line appended                                                              |
-|--------------------|----------------------------------------------------------------------------|
-| `~/.bashrc`        | `source ~/.bashrc_lpc_aliases`                                             |
-| `~/.bashrc`        | `source ~/.bashrc_lpc_functions`                                           |
-| `~/.bash_profile`  | `source ~/.bashrc` (ensures SSH login shells also load `.bashrc`)          |
-| `~/.vimrc`         | `source ~/.vimrc_lpc`                                                      |
-| `~/.screenrc`      | `source $HOME/.screenrc_lpc`                                               |
+| Step | Action |
+|------|--------|
+| 0 | Moves the repo directory to `~/.lpc/` (skips if already there; aborts if `~/.lpc/` exists from a different path) |
+| 1 | Backs up `~/.bashrc` → `~/.lpc/rc_files_origins/`, appends `source ~/.lpc/.bashrc_lpc_aliases` and `source ~/.lpc/.bashrc_lpc_functions` |
+| 2 | Backs up `~/.bash_profile`, appends `source ~/.bashrc` (ensures SSH login shells load `.bashrc`) |
+| 3 | Backs up `~/.vimrc`, appends `source ~/.lpc/.vimrc_lpc` |
+| 4 | Backs up `~/.screenrc`, appends `source ~/.lpc/.screenrc_lpc` |
 
 The loader is **idempotent** — running it multiple times will not duplicate lines or overwrite existing backups.
 
@@ -59,12 +73,12 @@ The loader is **idempotent** — running it multiple times will not duplicate li
 
 ### `lpc_loader.sh`
 
-Installer script. Uses two helper functions:
+Installer script. On first run it **moves the entire repo to `~/.lpc/`** using `BASH_SOURCE[0]` to locate itself (safe for both `bash lpc_loader.sh` and `. lpc_loader.sh`). Then uses two helpers:
 
-- `backup_file()` — copies each target *rc file into `rc_files_origins/` before modifying it (skips if backup already exists)
+- `backup_file()` — copies each target *rc file into `~/.lpc/rc_files_origins/` before modifying it (skips if backup already exists)
 - `append_if_missing()` — appends a `source` line to a file only if it is not already present
 
-Both helpers are **idempotent** — safe to run multiple times.
+All operations are **idempotent** — safe to run multiple times.
 
 ### `.bashrc_lpc_aliases`
 
@@ -114,7 +128,18 @@ Loaded by `~/.bashrc`. Contains:
   | `glog`    | `git log --oneline -10`    | Last 10 commits one-liner                 |
   | `gbranch` | `git branch`               |                                           |
   | `gch`     | `git checkout`             |                                           |
-  | `fix-ssh` | `ssh-fix`                  | Alias for the `ssh-fix` function          |
+
+- **Miscellaneous**
+
+  | Alias     | Command                                   | Note                                 |
+  |-----------|-------------------------------------------|--------------------------------------|
+  | `fix-ssh` | `ssh-fix`                                 | Shorthand for the `ssh-fix` function |
+  | `cls`     | `clear`                                   | Alternate clear                      |
+  | `update`  | `sudo apt update && sudo apt upgrade -y`  | Update system packages               |
+  | `mkdir`   | `mkdir -p`                                | Create parent dirs as needed         |
+  | `cp`      | `cp -i`                                   | Prompt before overwriting            |
+  | `mv`      | `mv -i`                                   | Prompt before overwriting            |
+  | `rm`      | `rm -i`                                   | Prompt before deleting               |
 
 - **Directory stack** — tracks the last 5 visited directories (see also `.bashrc_lpc_functions`)
 
@@ -183,22 +208,24 @@ Contains: `.bashrc`, `.bash_profile`, `.bash_aliases`, `.bash_history`, `.vimrc`
 SSH login
     └─► ~/.bash_profile
             └─► ~/.bashrc  (sourced via loader line)
-                    ├─► ~/.bashrc_lpc_aliases     (aliases, editor, dir stack)
-                    └─► ~/.bashrc_lpc_functions   (ssh-fix, dirs_history, cdd)
+                    ├─► ~/.lpc/.bashrc_lpc_aliases     (aliases, editor)
+                    └─► ~/.lpc/.bashrc_lpc_functions   (ssh-fix, dirs_history, cdd)
 
 Terminal emulator (non-login shell)
     └─► ~/.bashrc
-            ├─► ~/.bashrc_lpc_aliases
-            └─► ~/.bashrc_lpc_functions
+            ├─► ~/.lpc/.bashrc_lpc_aliases
+            └─► ~/.lpc/.bashrc_lpc_functions
 ```
 
 ---
 
 ## Adding New Customizations
 
-- **New aliases** → add to `.bashrc_lpc_aliases`
-- **New functions** → add to `.bashrc_lpc_functions`
-- **Vim settings** → add to `.vimrc_lpc`
-- **Screen settings** → add to `.screenrc_lpc`
+Edit files directly in `~/.lpc/` (the repo lives there after installation).
+
+- **New aliases** → edit `~/.lpc/.bashrc_lpc_aliases`
+- **New functions** → edit `~/.lpc/.bashrc_lpc_functions`
+- **Vim settings** → edit `~/.lpc/.vimrc_lpc`
+- **Screen settings** → edit `~/.lpc/.screenrc_lpc`
 
 Never edit the original `~/.bashrc`, `~/.vimrc`, or `~/.screenrc` directly.

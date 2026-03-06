@@ -1,13 +1,29 @@
 #!/bin/bash
 
 # lpc_loader.sh
-# Appends loading statements to *rc files for LPC customizations
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ORIGINS_DIR="$SCRIPT_DIR/rc_files_origins"
+# Moves the LPC repo to ~/.lpc (if not already there) and wires dotfiles into *rc files
+LPC_DIR="$HOME/.lpc"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASHRC="$HOME/.bashrc"
 BASH_PROFILE="$HOME/.bash_profile"
 VIMRC="$HOME/.vimrc"
 SCREENRC="$HOME/.screenrc"
+
+# ─────────────────────────────────────────────
+# 0. Move repo to ~/.lpc if not already there
+# ─────────────────────────────────────────────
+if [ "$SCRIPT_DIR" != "$LPC_DIR" ]; then
+    if [ -d "$LPC_DIR" ]; then
+        echo "[ERROR] ~/.lpc already exists but the repo is at $SCRIPT_DIR"
+        echo "        Remove ~/.lpc or run lpc_loader.sh from inside ~/.lpc directly."
+        exit 1
+    fi
+    echo "[MOVE] Moving repo from $SCRIPT_DIR -> $LPC_DIR ..."
+    mv "$SCRIPT_DIR" "$LPC_DIR"
+    echo "[OK]   Repo is now at $LPC_DIR"
+fi
+
+ORIGINS_DIR="$LPC_DIR/rc_files_origins"
 
 # Helper function to back up a file into rc_files_origins/ (once only)
 backup_file() {
@@ -22,10 +38,10 @@ backup_file() {
     fi
 
     if [ -f "$dest" ]; then
-        echo "[SKIP BACKUP] $(basename "$file") already backed up in rc_files_origins/"
+        echo "[SKIP BACKUP] $(basename "$file") already backed up in ~/.lpc/rc_files_origins/"
     else
         cp "$file" "$dest"
-        echo "[BACKUP] $(basename "$file") -> rc_files_origins/"
+        echo "[BACKUP] $(basename "$file") -> ~/.lpc/rc_files_origins/"
     fi
 }
 
@@ -54,11 +70,11 @@ append_if_missing() {
 # ─────────────────────────────────────────────
 backup_file "$BASHRC"
 append_if_missing "$BASHRC" \
-    '[ -f ~/.bashrc_lpc_aliases ] && source ~/.bashrc_lpc_aliases' \
+    '[ -f ~/.lpc/.bashrc_lpc_aliases ] && source ~/.lpc/.bashrc_lpc_aliases' \
     "source .bashrc_lpc_aliases"
 
 append_if_missing "$BASHRC" \
-    '[ -f ~/.bashrc_lpc_functions ] && source ~/.bashrc_lpc_functions' \
+    '[ -f ~/.lpc/.bashrc_lpc_functions ] && source ~/.lpc/.bashrc_lpc_functions' \
     "source .bashrc_lpc_functions"
 
 # ─────────────────────────────────────────────
@@ -74,7 +90,7 @@ append_if_missing "$BASH_PROFILE" \
 # ─────────────────────────────────────────────
 backup_file "$VIMRC"
 append_if_missing "$VIMRC" \
-    'if filereadable(expand("~/.vimrc_lpc")) | source ~/.vimrc_lpc | endif' \
+    'if filereadable(expand("~/.lpc/.vimrc_lpc")) | source ~/.lpc/.vimrc_lpc | endif' \
     "source .vimrc_lpc"
 
 # ─────────────────────────────────────────────
@@ -82,7 +98,7 @@ append_if_missing "$VIMRC" \
 # ─────────────────────────────────────────────
 backup_file "$SCREENRC"
 append_if_missing "$SCREENRC" \
-    'source $HOME/.screenrc_lpc' \
+    'source $HOME/.lpc/.screenrc_lpc' \
     "source .screenrc_lpc"
 
 echo ""
