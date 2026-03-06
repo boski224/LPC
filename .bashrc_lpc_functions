@@ -1,8 +1,8 @@
-# ...
+# ~/.bashrc_lpc_functions
 # ──────────────────────────────────────────
 # SSH agent recovery
 # ──────────────────────────────────────────
-ssh-fix() {
+ssh_fix() {
     echo "==> Current SSH_AUTH_SOCK: ${SSH_AUTH_SOCK:-<not set>}"
     echo "==> Current keys loaded:"
     ssh-add -l 2>/dev/null || echo "    (none or agent not reachable)"

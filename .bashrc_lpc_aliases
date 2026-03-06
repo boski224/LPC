@@ -17,8 +17,8 @@ set -o vi
 alias ll='ls -la'
 alias la='ls -A'
 alias l='ls -CF'
-alias '..' = 'cd ..'
-alias '...' = 'cd ../..'
+alias ..='cd ..'
+alias ...='cd ../..'
 alias h='history'
 alias j='jobs'
 alias v='vim'
@@ -45,7 +45,7 @@ alias gbranch='git branch'
 alias gch='git checkout'
 
 # Miscellaneous aliases:
-alias fix-ssh='ssh-fix'
+alias fix-ssh='ssh_fix'
 alias cls='clear'
 alias update='sudo apt update && sudo apt upgrade -y'
 alias mkdir='mkdir -p' # Create parent directories as needed

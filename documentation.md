@@ -133,7 +133,7 @@ Loaded by `~/.bashrc`. Contains:
 
   | Alias     | Command                                   | Note                                 |
   |-----------|-------------------------------------------|--------------------------------------|
-  | `fix-ssh` | `ssh-fix`                                 | Shorthand for the `ssh-fix` function |
+  | `fix-ssh` | `ssh_fix`   | Shorthand for the `ssh_fix` function |
   | `cls`     | `clear`                                   | Alternate clear                      |
   | `update`  | `sudo apt update && sudo apt upgrade -y`  | Update system packages               |
   | `mkdir`   | `mkdir -p`                                | Create parent dirs as needed         |
@@ -157,7 +157,8 @@ Recovers a lost or broken SSH agent connection — useful when re-attaching to a
 
 Usage:
 ```bash
-ssh-fix
+fix-ssh   # via alias
+ssh_fix   # directly
 ```
 
 #### Directory stack functions
