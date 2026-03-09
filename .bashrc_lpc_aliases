@@ -52,3 +52,6 @@ alias mkdir='mkdir -p' # Create parent directories as needed
 alias cp='cp -i' # Prompt before overwriting
 alias mv='mv -i' # Prompt before overwriting
 alias rm='rm -i' # Prompt before deleting
+
+# OEA aliases: 
+pyactiv='pyenv activate sage_core_3_10_13'
