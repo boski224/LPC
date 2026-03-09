@@ -38,6 +38,7 @@ alias gstat='git status' # gs is reserved by the system gst is a software, so us
 alias gadd='git add'
 alias gcommit='git commit'
 alias gdiff='git diff'
+alias gfetch='git fetch' 
 alias gpush='git push' # Avoid conflict with system 'gp' command
 alias gpull='git pull' # Avoid conflict with system 'gl' command
 alias glog='git log --oneline -10'
