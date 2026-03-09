@@ -35,6 +35,7 @@ alias reload='source ~/.bashrc'
 
 # Git aliases:
 alias gstat='git status' # gs is reserved by the system gst is a software, so using gstat for git status
+alias gst="git status -vv"
 alias gadd='git add'
 alias gcommit='git commit'
 alias gdiff='git diff'
