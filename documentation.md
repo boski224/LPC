@@ -123,6 +123,7 @@ Loaded by `~/.bashrc`. Contains:
   | `gadd`    | `git add`                  |                                           |
   | `gcommit` | `git commit`               |                                           |
   | `gdiff`   | `git diff`                 |                                           |
+  | `gfetch`  | `git fetch`                |                                           |
   | `gpush`   | `git push`                 | Avoids conflict with system `gp`          |
   | `gpull`   | `git pull`                 | Avoids conflict with system `gl`          |
   | `glog`    | `git log --oneline -10`    | Last 10 commits one-liner                 |
@@ -140,6 +141,12 @@ Loaded by `~/.bashrc`. Contains:
   | `cp`      | `cp -i`                                   | Prompt before overwriting            |
   | `mv`      | `mv -i`                                   | Prompt before overwriting            |
   | `rm`      | `rm -i`                                   | Prompt before deleting               |
+
+- **OEA aliases**
+
+  | Alias      | Command                            | Note                              |
+  |------------|------------------------------------|-----------------------------------|
+  | `pyactiv`  | `pyenv activate sage_core_3_10_13` | Activate the OEA pyenv environment |
 
 - **Directory stack** — tracks the last 5 visited directories (see also `.bashrc_lpc_functions`)
 
