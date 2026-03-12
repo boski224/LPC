@@ -1,0 +1,320 @@
+############################### From WORK:
+##################     standart    ###################
+
+# standardowe opcje
+startup_message     off
+vbell             off
+defscrollback         4096
+# shell            -$SHELL
+shelltitle        bash
+autodetach        on
+
+# enable: SHIFT + PGUP / SHIFT + PGDN scroll
+# przewijanie zawartosci
+termcapinfo rxvt ti@:te@
+
+# change window with ALT + Q /ALT +W
+# wygodniejsze przelaczanie okien
+# To catch it use 'showkey -a'
+# bindkey "^[[1;5D" prev
+# bindkey "^[[1;5C" next
+ bindkey "^[[1;6D" prev
+ bindkey "^[[1;6C" next
+
+# Autostart okienek i programów z nimi polaczonymi  
+
+screen -t MC	 	0 mc
+screen -t WORK-01       1    
+screen -t WORK-02       2    
+screen -t WORK-03       3    
+screen -t WORK-04       4    
+screen -t WORK-05       5    
+screen -t WORK-06       6    
+screen -t WORK-07       7    
+screen -t WORK-08       8    
+screen -t hTop		9 htop
+select        1
+
+
+###################     status bar    ###################
+# status z data/load/hostname/windows
+ hardstatus alwayslastline '%{= M} %H%{= G} %l %= %{= w}%-w[%{+b r}%n*%t%{-b r}%{w}]%+w %= %{c}%d %D %{B}%c '
+# hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+# hardstatus string "%{.kW}%-w%{.W}%n %t%{-}%{=b kw}%?%+w%?"            #B&W
+# hardstatus string "%{.kW}%-w%{.W}%n %t%{-}%{=b kw}%?%+w%? %=%c %d/%m/%Y" #B&W & date&time
+# hardstatus string "%{.kW}%-w%{.W}%n %t%{-}%{=b kw}%?%+w%? %=%c %d/%m/%Y" #B&W & date&time
+# hardstatus string '%{= R}[%{w}%H%{R}][%{w}%=%?%-Lw%?%{R}%n*%f%t%?(%u)%? %{w}%?%+Lw%?%?%=%{R}][%{w}%m/%d %{W}%C%A%{R}]'
+# hardstatus string "%{.kW}%-w%{.W}%n %t%{-}%+w %=%C %a "
+#hardstatus string "%{=b kw} %?%-Lw%?%{=br kw}[%n %t]%{=b kw}%?%+Lw%? %="
+#hardstatus alwayslastline '%{bk}[ %{W}%H %{b}][ %{w}%l%{b} ]   %{b}[%{w} %D %d.%m %c:%s%{b} ]'
+#hardstatus alwayslastline '%{bk}[%{W}%H%{b}] %{w} %l %= %n*%t%{-b r}%{w}%+w %= %{w}%d %D %{w}%c'
+#hardstatus alwayslastline '%{wk}[ %{g}][%= %{wk}%?%-Lw%?%{=b kR}(%{W}%n*%f %t%?(%u)%?%{=b kR})%{= kw}%?%+Lw%?%?%= %{g}][%{Y}%l%{g}]%{=b C}[ %m/%d %c ]%{W}'
+
+sorendition 10 07
+backtick     100 5 5 tail -1 /var/log/syslog
+caption always '%{= wk} %= %100` %='
+
+
+###################################################################################################################################
+###########################                                                          ##############################################
+###########################            POMOC NAUKOWA :D                              ##############################################
+###########################                                                          ##############################################
+###########################   .screenrc -> screen's Appearancescreen's Appearance    ##############################################
+###########################   http://aperiodic.net/screen/appearance                 ##############################################
+###########################                                                          ##############################################
+###################################################################################################################################
+# 
+# Basics
+# The commands in this section include things that allow screen to communicate information to the user (like the info command) and things that change how screen looks (like the caption command).
+# The information-providing commands are pretty simple: C-a i gives some information about the current window; C-a t displays some information about the system on which screen is running (including the current time); C-a m redisplays the last message that screen displayed (in case you missed it); C-a v displays information about the version of screen that's running; and C-a , displays the license information screen that is shown at screen startup by default.
+
+# Extras
+
+# Hardstatus Lines
+# Some terminals, mostly hardware serial terminals, have a separate area of their display that is reserved as a status line. Many modern graphical terminals use the titlebar of the window for such status information. screen calls this a “hardstatus line”. When screen starts, it checks to see if the hs termcap capability is set; if so, it assumes that there's a hardstatus line present. If there's a hardstatus line and the hardstatus option is set to “on” (which is the default setting), screen will use the hardstatus line to display status messages.
+# screen also advertises the hardstatus capability to programs running in its windows. When a program uses the hardstatus escape sequence (ESC_stringESC\) or the xterm title escape sequence (ESC]0;string^G), screen stores that string on a per-window basis. The per-window hardstatus string can also be changed with the hstatus command (and the default hstatus for new windows can be set with defhstatus).
+# The hardstatus command can also be used to set a string that will be displayed in the hardstatus line when screen isn't using it to display messages. The string can contain any of screen's string escapes. The default value is %h, which just displays the current window's hstatus string.
+
+# Status Bar
+# One of the most common things that screen users want to do is to have some sort of status bar at the bottom (or top) of the display. screen provides several ways to do this.
+# If your terminal has a hardstatus line (as discussed above), you can use the hardstatus string as a status bar. If you don't have a hardstatus line, you have two choices. The first is to use the command hardstatus lastline, which tells screen to reserve the last line of the display for use as a hardstatus line. With a hardstatus string param command, you will get a status bar at the bottom of your display.
+# The second option is to use the caption command. When the display is split into multiple regions (see Region Management for more details), screen puts a caption at the bottom of each region. You can use the caption always command to always display the caption, even if the display is not split. Just as with hardstatus, there's a caption string param command that can be used to make a status bar. It uses all the same string escapes that the hardstatus command does.
+# There are tradeoffs for each of the two approaches. One big one is that it's common to (ab)use the hardstatus capability to put things into ''xterm'''s title bar. If you plan to do that, you'll need to use the caption for your status bar. Another tradeoff is that you might want different information available in the captions for split displays than in your main status bar. In that case, you'd want to use the hardstatus line for the status bar.
+
+# Bells
+# screen can either use an audible bell or a visual bell, as controlled by the vbell command. If vbell is off, when screen receives an ASCII BEL character in the current window, it sends a bell character (usually an ASCII BEL, but it depends on what the terminal's termcap says) to the display (which will, presumably, beep). If vbell is on, when screen receives a BEL character, it either triggers the display terminal's visual bell, if the terminal's termcap has a vb capability, or it flashes the screen and displays the vbell_msg. C-a C-g will toggle vbell on and off.
+# If screen receives a bell in a window other than the current one, it displays the bell_msg onscreen.
+
+# Window Size
+# A screen window does not have to be the same size as the display that's connected to it, although screen will resize windows to the display when you switch to them. This only applies to the first display showing the window; if another connected display, either from the -x command-line option or from a multiuser session, switches to an already-displayed window, the window keeps the size set by the first display.
+# The height command can change either the height or the height and width of a window. (If you want to just change the width, use the width command, which is exactly like height with the arguments reversed.) If the display's termcap supports it, screen will change both the display terminal's and the current window's dimensions. You can specify changing just the display or just the window with the -d and -w options, respectively.
+# If a window's dimensions have gotten out of sync with a display's, you can use the C-a F command to resize the window to the display.
+
+# Command Line
+# -A - Disables one aspect of screen's default behavior: Normally, if the terminal can be resized, then screen will resize the terminal to fit the dimensions of the windows it's displaying. When -A is given, resizable terminals work just like nonresizable terminals–the windows are resized to fit the dimensions of the display. (See below for Windows PuTTY)
+
+# Keybindings
+# C-a C - (clear) Clears the current window.
+# C-a F - (fit) Fits the current window to the display's dimensions.
+# C-a C-g - (vbell) Toggles visual bell mode.
+# C-a i - (info) Displays information about the current window.
+# C-a m - (lastmsg) Redisplays the last message for this display.
+# C-a t - (time) Displays system information.
+# C-a v - (version) Displays screen's version information.
+# C-a W - (width) Toggles the display between 80 and 132 columns.
+# C-a , - (license) Displays screen's license information.
+
+# Commands
+# attrcolor - Remaps the effect of text attributes.
+# autonuke - Determines whether a given window will attempt to display beffered text after a clear command is received.
+# bell_msg - Changes the message printed when a bell character is received in another window.
+# caption - Controls the display of the caption line at the bottom of screen windows.
+# clear - Clears the current window, but puts its text into the scrollback buffer.
+# defautonuke - Changes the default autonuke setting for new windows.
+# defhstatus - Sets the default hardstatus line for new windows.
+# echo - Displays a message on the current display as if it were a screen message.
+# fit - Resizes the window to fit the current display region.
+# height - Changes the dimensions of the window or the display.
+# info - Display information about screen and the current window in the message area.
+# license - Displays screen's license, as happens when screen starts up.
+# nethack - Controls the use of nethack-themed messages from screen.
+# hardstatus - Controls use of the terminal's hardstatus line (if any) for displaying screen messages.
+# hstatus - Synonym for hardstatus string status.
+# lastmsg - Redisplays the last message that screen showed on the current display.
+# msgminwait - Sets the minimum length of time that a screen message will be visible even if the user interacts with screen.
+# msgwait - Sets the length of time that a message will remain visible if the user does not interact with screen during the lifetime of the message.
+# sorendition - Defines the visual appearance of screen's messages.
+# startup_message - Enables or disables the display of screen's license information when screen starts up.
+# time - Displays (or controls the display of) system information.
+# vbell - Sets or toggles the visual bell.
+# vbell_msg - Sets or displays the message displayed for visual bells.
+# vbellwait - Defines a hysteresis for visual bells.
+# version - Uses the message area to display screen's version and compile date.
+# wall - Like echo, but sends the message to all displays, with the name of the current user prepended.
+# width - Like height, but with the order of arguments reversed.
+
+# Examples
+
+# Status Bar Examples
+# Simple window list
+# 
+# You can force the status line to always stay at the bottom of the screen and set up a statusline string that displays the window information by adding either of these to your .screenrc:
+# hardstatus alwayslastline "%w"
+# caption always "%w"
+# Highlighted current window
+# 
+# This puts the current window in bold and surrounded by brackets:
+# caption always "%{-b ..}%-w%{+b ..}[[%n%f*%t]]%{-}%+w"
+# Window list centered on current window
+# 
+# See the examples in truncation/padding escapes, particularly the last example.
+# Centered window list
+# 
+# This small snippet for your .screenrc uses both the caption and hardstatus line to give a two-line statusbar at the bottom of the display. The upper line (the caption line) consists of the number and name of all open windows, black on white background, with the active window centered and highlighted. The lower line (the hardstatus line) shows the window number, window name and the window's hardstatus in white on black.
+# hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
+# caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
+# Status bar and xterm title
+# 
+# In this section, we'll build up a configuration that uses the xterm title bar as a hardstatus line and displays a status bar at the bottom of the screen.
+# To start with, we'll tell screen that xterms (and some other terminals that use the same escape sequences) do have a hardstatus line, and we'll use the escape sequences for setting the title bar as the hardstatus escape sequences:
+# termcapinfo xterm*|Eterm|mlterm "hs:ts=\E]0;:fs=\007:ds=\E]0;screen\007"
+# Title bars aren't good places for actual status messages, so we'll tell screen not to use the hardstatus line for status messages (they'll be displayed at the bottom of the screen, just as if there was no hardstatus line):
+# hardstatus off
+# We'll set the hardstatus string to show us the number and title of the current window, as well as the window's hstatus string. Because of the %? escapes, the brackets are only shown if the window has an hstatus string:
+# hardstatus string "screen %n (%t)%? [%h]%?"
+# Finally, we have the caption that makes for our status bar at the bottom of the screen. It makes use of the %F escape to change the colors depending on whether it's attached to the window with the focus. This causes the currently-focused window to stand out.
+# If the caption is on a non-focused window, the entire bar is blue text on a blue background (so it just looks blue), with the exception of the window's information, which is blue on yellow. The focused (or only) window's caption has a blue-on-cyan information section with the date and computer name, followed by the window list in white on blue. The current window is centered in the window list and is displayed in blue on yellow:
+# caption always "%?%F%{-b bc}%:%{-b bb}%?%C|%D|%M %d|%H%?%F%{+u wb}%? %L=%-Lw%45>%{+b by}%n%f*%t%{-}%+Lw%-0<"
+
+# Screen resizing despite -A when using PuTTY on Windows, iTerm2 on Mac OS X
+# With GNU screen 2009-05-15 (git://git.savannah.gnu.org/screen.git :: 9cdf8e20), the resize disable command line option -A does not work with PuTTY on Windows (0.60). One way to work around this is to disable the terminal feature for remote-controlled terminal resizing in PuTTY. This setting is found in “Terminal” > “Features” > “Disable remote-controlled terminal resizing”. After this you do not need to specify -A since screen will now force a resizing.
+# The same problem occurs with iTerm 2 on Mac OS X, and the solution is approximately the same: in your profile, select the terminal tab, then mark the checkbox Disable session-initiated window resizing.
+
+###################################################################################################################################
+###################################################################################################################################
+###########################                                                                                               #########
+###########################   .screenrc -> hardstatus -> string escapes                                                   #########
+###########################   http://aperiodic.net/screen/man:string_escapes                                              #########
+###########################   http://www.kilobitspersecond.com/2014/02/10/understanding-gnu-screens-hardstatus-strings/   #########
+###########################                                                                                               #########
+###################################################################################################################################
+
+# String Escapes
+# Screen provides an escape mechanism to insert information like the current time into messages or file names. The escape character is '%' with one exception: inside of a window's hardstatus '^%' ('^E') is used instead.
+# Here is the full list of supported escapes:
+# %	the escape character itself
+# a	either 'am' or 'pm'
+# A	either 'AM' or 'PM'
+# c	current time HH:MM in 24h format
+# C	current time HH:MM in 12h format
+# d	day number
+# D	weekday name
+# f	flags of the window (see Window Flags)
+# F	sets %? to true if the window has the focus
+# h	hardstatus of the window
+# H	hostname of the system
+# l	current load of the system
+# m	month number
+# M	month name
+# n	window number
+# s	seconds
+# t	window title
+# u	all other users on this window
+# w	all window numbers and names. With '-' qualifier: up to the current window; with '+' qualifier: starting with the window after the current one.
+# W	all window numbers and names except the current one
+# y	last two digits of the year number
+# Y	full year number
+# ?	the part to the next '%?' is displayed only if a '%' escape inside the part expands to a non empty string
+# :	else part of '%?'
+# =	pad the string to the display's width (like TeX's hfill). If a number is specified, pad to the percentage of the window's width. A '0' qualifier tells screen to treat the number as absolute position. You can specify to pad relative to the last absolute pad position by adding a '+' qualifier or to pad relative to the right margin by using '-'. The padding truncates the string if the specified position lies before the current position. Add the 'L' qualifier to change this.
+# <	same as '%=' but just do truncation, do not fill with spaces
+# >	mark the current text position for the next truncation. When screen needs to do truncation, it tries to do it in a way that the marked position gets moved to the specified percentage of the output area. (The area starts from the last absolute pad position and ends with the position specified by the truncation operator.) The 'L' qualifier tells screen to mark the truncated parts with '…'.
+# {	attribute/color modifier string terminated by the next '}'
+# `	Substitute with the output of a 'backtick' command. The length qualifier is misused to identify one of the commands.
+# The 'c' and 'C' escape may be qualified with a '0' to make screen use zero instead of space as fill character. The '0' qualifier also makes the '=' escape use absolute positions. The 'n' and '=' escapes understand a length qualifier (e.g. '%3n'), 'D' and 'M' can be prefixed with 'L' to generate long names, 'w' and 'W' also show the window flags if 'L' is given.
+# ￼ See also
+# Truncation/padding escapes has more information about the '=', '<', and '>' escapes.
+# An attribute/color modifier is is used to change the attributes or the color settings. Its format is '[attribute modifier] [color description]'. The attribute modifier must be prefixed by a change type indicator if it can be confused with a color desciption. The following change types are known:
+# +	add the specified set to the current attributes
+# -	remove the set from the current attributes
+# !	invert the set in the current attributes
+# =	change the current attributes to the specified set
+# The attribute set can either be specified as a hexadecimal number or a combination of the following letters:
+# d	dim
+# u	underline
+# b	bold
+# r	reverse
+# s	standout
+# B	blinking
+# Colors are coded either as a hexadecimal number or two letters specifying the desired background and foreground color (in that order). The following colors are known:
+# k	black
+# r	red
+# g	green
+# y	yellow
+# b	blue
+# m	magenta
+# c	cyan
+# w	white
+# d	default color
+# .	leave color unchanged
+# The capitalized versions of the letter specify bright colors. You can also use the pseudo-color 'i' to set just the brightness and leave the color unchanged. A one digit/letter color description is treated as foreground or background color dependant on the current attributes: if reverse mode is set, the background color is changed instead of the foreground color. If you don't like this, prefix the color with a '.'. If you want the same behaviour for two-letter color descriptions, also prefix them with a '.'. As a special case, '%{-}' restores the attributes and colors that were set before the last change was made (i.e. pops one level of the color-change stack).
+# Examples:
+# "G"
+# set color to bright green
+# "+b r"
+# use bold red
+# "= yd"
+# clear all attributes, write in default color on yellow background.
+# %-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<
+# The available windows centered at the current window and truncated to the available width. The current window is displayed white on blue. This can be used with 'hardstatus alwayslastline'.
+# %?%F%{.R.}%?%3n %t%? [%h]%?
+# The window number and title and the windows hardstatus, if one is set. Also use a red background if this is the active focus. Useful for 'caption string'.String Escapes
+# Screen provides an escape mechanism to insert information like the current time into messages or file names. The escape character is '%' with one exception: inside of a window's hardstatus '^%' ('^E') is used instead.
+# Here is the full list of supported escapes:
+# %	the escape character itself
+# a	either 'am' or 'pm'
+# A	either 'AM' or 'PM'
+# c	current time HH:MM in 24h format
+# C	current time HH:MM in 12h format
+# d	day number
+# D	weekday name
+# f	flags of the window (see Window Flags)
+# F	sets %? to true if the window has the focus
+# h	hardstatus of the window
+# H	hostname of the system
+# l	current load of the system
+# m	month number
+# M	month name
+# n	window number
+# s	seconds
+# t	window title
+# u	all other users on this window
+# w	all window numbers and names. With '-' qualifier: up to the current window; with '+' qualifier: starting with the window after the current one.
+# W	all window numbers and names except the current one
+# y	last two digits of the year number
+# Y	full year number
+# ?	the part to the next '%?' is displayed only if a '%' escape inside the part expands to a non empty string
+# :	else part of '%?'
+# =	pad the string to the display's width (like TeX's hfill). If a number is specified, pad to the percentage of the window's width. A '0' qualifier tells screen to treat the number as absolute position. You can specify to pad relative to the last absolute pad position by adding a '+' qualifier or to pad relative to the right margin by using '-'. The padding truncates the string if the specified position lies before the current position. Add the 'L' qualifier to change this.
+# <	same as '%=' but just do truncation, do not fill with spaces
+# >	mark the current text position for the next truncation. When screen needs to do truncation, it tries to do it in a way that the marked position gets moved to the specified percentage of the output area. (The area starts from the last absolute pad position and ends with the position specified by the truncation operator.) The 'L' qualifier tells screen to mark the truncated parts with '…'.
+# {	attribute/color modifier string terminated by the next '}'
+# `	Substitute with the output of a 'backtick' command. The length qualifier is misused to identify one of the commands.
+# The 'c' and 'C' escape may be qualified with a '0' to make screen use zero instead of space as fill character. The '0' qualifier also makes the '=' escape use absolute positions. The 'n' and '=' escapes understand a length qualifier (e.g. '%3n'), 'D' and 'M' can be prefixed with 'L' to generate long names, 'w' and 'W' also show the window flags if 'L' is given.
+# ￼ See also
+# Truncation/padding escapes has more information about the '=', '<', and '>' escapes.
+# An attribute/color modifier is is used to change the attributes or the color settings. Its format is '[attribute modifier] [color description]'. The attribute modifier must be prefixed by a change type indicator if it can be confused with a color desciption. The following change types are known:
+# +	add the specified set to the current attributes
+# -	remove the set from the current attributes
+# !	invert the set in the current attributes
+# =	change the current attributes to the specified set
+# The attribute set can either be specified as a hexadecimal number or a combination of the following letters:
+# d	dim
+# u	underline
+# b	bold
+# r	reverse
+# s	standout
+# B	blinking
+# Colors are coded either as a hexadecimal number or two letters specifying the desired background and foreground color (in that order). The following colors are known:
+# k	black
+# r	red
+# g	green
+# y	yellow
+# b	blue
+# m	magenta
+# c	cyan
+# w	white
+# d	default color
+# .	leave color unchanged
+# The capitalized versions of the letter specify bright colors. You can also use the pseudo-color 'i' to set just the brightness and leave the color unchanged. A one digit/letter color description is treated as foreground or background color dependant on the current attributes: if reverse mode is set, the background color is changed instead of the foreground color. If you don't like this, prefix the color with a '.'. If you want the same behaviour for two-letter color descriptions, also prefix them with a '.'. As a special case, '%{-}' restores the attributes and colors that were set before the last change was made (i.e. pops one level of the color-change stack).
+# Examples:
+# "G"
+# set color to bright green
+# "+b r"
+# use bold red
+# "= yd"
+# clear all attributes, write in default color on yellow background.
+# %-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<
+# The available windows centered at the current window and truncated to the available width. The current window is displayed white on blue. This can be used with 'hardstatus alwayslastline'.
+# %?%F%{.R.}%?%3n %t%? [%h]%?
+# The window number and title and the windows hardstatus, if one is set. Also use a red background if this is the active focus. Useful for 'caption string'.
