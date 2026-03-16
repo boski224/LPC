@@ -85,3 +85,24 @@ cdd() {
     fi
 }
 
+# ===================== GIT PROMPT ======================================= #
+# Git branch name and state: red=uncommitted, blue=ahead
+function git_prompt(){
+     unset GPROMPT
+     git status > /dev/null 2>&1 && {
+         local gbranch
+
+         GPROMPT="${c_lgreen}("
+         [[ -n $(git diff 2> /dev/null) ]] && GPROMPT="${GPROMPT}${c_red}*"
+         [[ -n $(git status 2> /dev/null | grep ahead) ]] && GPROMPT="${GPROMPT}${c_blue}*"
+         gbranch=$(git branch 2> /dev/null | grep '*' | cut -d' ' -f2)
+         GPROMPT="${GPROMPT}${c_green}${gbranch}${c_lgreen})"
+         echo -n "${GPROMPT}"
+     }
+}
+
+function set_prompt () {
+         export PS1="$(git_prompt)"${c_red}'['${c_green}'\u'${c_red}'@'${c_purple}'\H'${c_red}']['${c_white}'\w'${c_red}']'${c_lyellow}'\$'${c_nc}' '
+}
+
+PROMPT_COMMAND="set_prompt"
