@@ -95,7 +95,8 @@ function git_prompt(){
          GPROMPT="${c_lgreen}("
          [[ -n $(git diff 2> /dev/null) ]] && GPROMPT="${GPROMPT}${c_red}*"
          [[ -n $(git status 2> /dev/null | grep ahead) ]] && GPROMPT="${GPROMPT}${c_blue}*"
-         gbranch=$(git branch 2> /dev/null | grep '*' | cut -d'-' -f1,2 )
+         gbranch=$(git branch 2> /dev/null | grep '*' )
+         #gbranch=$(git branch 2> /dev/null | grep '*' | cut -d'-' -f1,2 )
          # gbranch=$(git branch 2> /dev/null | grep '*' | awk -F'-' '{print($1$2)}'
          GPROMPT="${GPROMPT}${c_green}${gbranch}${c_lgreen})"
          echo -n "${GPROMPT}"
@@ -103,7 +104,7 @@ function git_prompt(){
 }
 
 function set_prompt () {
-         export PS1="${c_green}(${PYENV_VERSION})$(git_prompt)"${c_red}'['${c_green}'\u'${c_red}'@'${c_purple}'\H'${c_red}']['${c_white}'\w'${c_red}']'${c_lyellow}'\$'${c_nc}' '
+         export PS1="${c_green}(${PYENV_VERSION})$(git_prompt)\n"${c_red}'['${c_green}'\u'${c_red}'@'${c_purple}'\H'${c_red}']['${c_white}'\w'${c_red}']'${c_lyellow}'\$'${c_nc}' '
 }
 
 PROMPT_COMMAND="set_prompt"
