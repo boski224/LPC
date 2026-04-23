@@ -85,8 +85,8 @@ cdd() {
     fi
 }
 
-# ===================== GIT PROMPT ======================================= #
-# Git branch name and state: red=uncommitted, blue=ahead
+# # ===================== GIT PROMPT ======================================= #
+# Git branch name and state: red=uncommitted, blue=ahead <- made by me msyrek
 function git_prompt(){
      unset GPROMPT
      git status > /dev/null 2>&1 && {
@@ -107,4 +107,8 @@ function set_prompt () {
          export PS1="${c_green}(${PYENV_VERSION})$(git_prompt)"${c_red}'['${c_green}'\u'${c_red}'@'${c_purple}'\H'${c_red}']['${c_white}'\w'${c_red}']'${c_lyellow}'\$'${c_nc}' '
 }
 
-PROMPT_COMMAND="set_prompt"
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
+else
+    PROMPT_COMMAND="set_prompt" # Fallback to default prompt or custom prompt setup
+fi
