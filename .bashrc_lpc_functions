@@ -85,6 +85,40 @@ cdd() {
     fi
 }
 
+
+# # ===================== GIT PROMPT ======================================= #
+# Git branch switcher. 
+function gsw() {
+    number=1
+    #git branch | while read line ; do echo $number $line ; $number=$((number+1)) ;  done 
+    mapfile -t branches < <(git branch --format='%(refname:short)')
+   
+    for i in "${!branches[@]}"; do
+        printf '%d) %s\n' "$((i + 1))" "${branches[i]}"
+    done
+
+    read -rp "Choose branch number: " choice
+
+    case "$choice" in
+        ''|*[!0-9]*)
+        echo "Invalid number"
+        ;;
+
+    *)
+        index=$((choice - 1))
+        if (( index >= 0 && index < ${#branches[@]} )); then
+            branch="${branches[index]}"
+             echo "You chose: $branch"
+            git switch "$branch"
+        else
+            echo "Number out of range"
+        fi
+        ;;
+    esac
+}
+
+
+
 # # ===================== GIT PROMPT ======================================= #
 # Git branch name and state: red=uncommitted, blue=ahead <- made by me msyrek
 function git_prompt(){

@@ -67,6 +67,7 @@ alias gpull='git pull' # Avoid conflict with system 'gl' command
 alias glog='git log --oneline -10'
 alias gbranch='git branch'
 alias gch='git checkout'
+alias gsw='gsw'
 
 # Miscellaneous aliases:
 alias fix-ssh='ssh_fix'
