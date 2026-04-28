@@ -97,7 +97,8 @@ function gsw() {
         printf '%d) %s\n' "$((i + 1))" "${branches[i]}"
     done
 
-    read -rp "Choose branch number: " choice
+	echo
+	read -rp "Choose branch number: " choice
 
     case "$choice" in
         ''|*[!0-9]*)
@@ -108,7 +109,8 @@ function gsw() {
         index=$((choice - 1))
         if (( index >= 0 && index < ${#branches[@]} )); then
             branch="${branches[index]}"
-             echo "You chose: $branch"
+            echo "You chose: $branch"
+			echo
             git switch "$branch"
         else
             echo "Number out of range"
