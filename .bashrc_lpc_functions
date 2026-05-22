@@ -89,27 +89,36 @@ cdd() {
 # # ===================== GIT PROMPT ======================================= #
 # Git branch switcher. 
 function gsw() {
+    git rev-parse --git-dir > /dev/null 2>&1 || { echo "Not in a git repository"; return 0; }
+    
     number=1
-    #git branch | while read line ; do echo $number $line ; $number=$((number+1)) ;  done 
+    #git branch | while read line ; do echo $number $line ; $number=$((number+1)) ;  done
     mapfile -t branches < <(git branch --format='%(refname:short)')
-   
+
+    printf 'Choose a branch:\n\n'
     for i in "${!branches[@]}"; do
         printf '%d) %s\n' "$((i + 1))" "${branches[i]}"
     done
+    printf 'q) Quit\n'
 
 	echo
-	read -rp "Choose branch number: " choice
+	read -rp "Selected branch: " choice
 
     case "$choice" in
-        ''|*[!0-9]*)
+        ''|*[!0-9q]*)
         echo "Invalid number"
+        ;;
+
+    q)
+        echo "Quit"
+        return
         ;;
 
     *)
         index=$((choice - 1))
         if (( index >= 0 && index < ${#branches[@]} )); then
             branch="${branches[index]}"
-            echo "You chose: $branch"
+            #echo "You chose: $branch"
 			echo
             git switch "$branch"
         else
@@ -148,3 +157,62 @@ if command -v starship &> /dev/null; then
 else
     PROMPT_COMMAND="set_prompt" # Fallback to default prompt or custom prompt setup
 fi
+
+# OEA functions: 
+
+# Activating / deactivating Python environments with pyenv.
+function pyactiv() {
+    if [[ "$1" == "-d" ]]; then
+        echo "Deactivating Python environment."
+        pyenv deactivate
+    elif [[ "$1" == "-l" ]]; then
+        echo "Available Python environments:"
+        pyenv versions --bare
+    elif [[ "$1" == "-c" ]]; then
+        echo "Current Python environment: ${PYENV_VERSION:-<none>}"
+    elif [[ "$1" == "-p" ]]; then
+        echo "Available Python versions:"
+        pyenv install --list | grep -E '^\s*[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^\s*//'
+    elif [[ "$1" == "-s" && -z "$2" ]]; then
+        echo "Activating OEA environment: 'sage_core_3_10_13'."
+        env="sage_core_3_10_13"
+        pyenv activate "$env"
+    elif [[ -z "$1" || "$1" == "-h" ]]; then
+        echo "Usage: pyactiv [option|env]"
+        echo "Options:"
+        echo "  -d          Deactivate current Python environment"
+        echo "  -l          List available Python environments"
+        echo "  -c          Show current Python environment"
+        echo "  -p          List available Python versions"
+        echo "  -s          Activate OEA environment 'sage_core_3_10_13'"
+        echo "  [env]       Activate specified Python environment"
+    elif [[ -n "$1" ]]; then
+        pyenv activate "$1"
+    else 
+        pyactiv -h
+        pyactiv -s
+    fi
+}
+
+# LOG_LEVEL switcher for OEA logs.
+# Log_LEVEL possibilities: DEBUG, INFO, WARNING, ERROR, CRITICAL
+function loglevel() {
+    if [[ "$1" == "-h" || -z "$1" ]]; then
+        echo "Usage: loglevel [level]"
+        echo "Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL"
+        echo "Options:"
+        echo "  -c          Show current LOG_LEVEL"
+        echo "  -d          Unset LOG_LEVEL (default)"  
+    elif [[ "$1" =~ ^(DEBUG|INFO|WARNING|ERROR|CRITICAL|debug|info|warning|error|critical)$ ]]; then
+        export LOG_LEVEL="${1^^}"           #^^} converts to uppercase
+        echo "LOG_LEVEL set to: $LOG_LEVEL" 
+    elif [[ "$1" == "-c" ]]; then
+        echo "Current LOG_LEVEL: ${LOG_LEVEL:-<not set>}"
+    elif [[ "$1" == "-d" ]]; then
+        echo "Unsetting LOG_LEVEL."
+        unset LOG_LEVEL
+    else
+        echo "Invalid log level: $1"
+        echo "Use: DEBUG, INFO, WARNING, ERROR, CRITICAL"
+    fi
+}

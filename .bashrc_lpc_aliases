@@ -79,4 +79,4 @@ alias mv='mv -i' # Prompt before overwriting
 alias rm='rm -i' # Prompt before deleting
 
 # OEA aliases: 
-alias pyactiv='pyenv activate sage_core_3_10_13'
+# alias pyactiv='pyenv activate sage_core_3_10_13'
