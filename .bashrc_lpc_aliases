@@ -80,3 +80,4 @@ alias rm='rm -i' # Prompt before deleting
 
 # OEA aliases: 
 # alias pyactiv='pyenv activate sage_core_3_10_13'
+alias sc='cd /home/msyrek/projects/sage_core/'
