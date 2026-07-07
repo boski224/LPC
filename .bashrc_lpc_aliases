@@ -68,7 +68,7 @@ alias glog='git log --oneline -10'
 alias gbranch='git branch'
 alias gch='git checkout'
 alias gsw='gsw'
-alias gfp='git fetch && git pull'
+alias gfp='echo "git fetch" && git fetch && echo "git pull" && git pull'
 
 # Miscellaneous aliases:
 alias fix-ssh='ssh_fix'
