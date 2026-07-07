@@ -68,6 +68,7 @@ alias glog='git log --oneline -10'
 alias gbranch='git branch'
 alias gch='git checkout'
 alias gsw='gsw'
+alias gfp='git fetch && git pull'
 
 # Miscellaneous aliases:
 alias fix-ssh='ssh_fix'
@@ -81,3 +82,4 @@ alias rm='rm -i' # Prompt before deleting
 # OEA aliases: 
 # alias pyactiv='pyenv activate sage_core_3_10_13'
 alias sc='cd /home/msyrek/projects/sage_core/'
+alias pa='pyactiv -s'

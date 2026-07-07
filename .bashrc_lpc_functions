@@ -198,6 +198,9 @@ function pyactiv() {
 # Log_LEVEL possibilities: DEBUG, INFO, WARNING, ERROR, CRITICAL
 function loglevel() {
     if [[ "$1" == "-h" || -z "$1" ]]; then
+        echo
+		echo "Currently set loglevel: $LOG_LEVEL"
+        echo
         echo "Usage: loglevel [level]"
         echo "Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL"
         echo "Options:"
