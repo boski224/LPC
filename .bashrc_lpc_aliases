@@ -59,7 +59,7 @@ alias reload='source ~/.bashrc'
 alias gstat='git status' # gs is reserved by the system gst is a software, so using gstat for git status
 alias gst="git status -vv"
 alias gadd='git add'
-alias gcommit='git commit'
+alias gcm='git commit -m'
 alias gdiff='git diff'
 alias gfetch='git fetch' 
 alias gpush='git push' # Avoid conflict with system 'gp' command
@@ -69,6 +69,7 @@ alias gbranch='git branch'
 alias gch='git checkout'
 alias gsw='gsw'
 alias gfp='echo "git fetch" && git fetch && echo "git pull" && git pull'
+alias gmm='git merge main'
 
 # Miscellaneous aliases:
 alias fix-ssh='ssh_fix'
