@@ -219,3 +219,41 @@ function loglevel() {
         echo "Use: DEBUG, INFO, WARNING, ERROR, CRITICAL"
     fi
 }
+
+function gpush() {
+    echo -e "Did merged main, bumped the version and run \`uv lock\`?\n"
+    echo -e "[Y] Yes  -  Proceed with push"
+    echo -e "[N] No   -  Cancel push"
+    echo -e "[S] Skip -  Ignore the [ merge/bump/uv lock ] and proceed with push\n"
+    read -r response
+    case "$response" in
+        [Yy]* ) echo "Proceeding with git push." ; git push ; return 0 ;;
+        [Nn]* ) echo "Please bump the version before pushing."; return 1 ;;
+        [Ss]* ) echo "Skipping the version bump."; git push ; return 0 ;;
+        * ) echo "Invalid response. Aborting."; return 1 ;;
+    esac
+}
+
+# Sage version bumper
+# Bumps the Sage version in the current environment.
+function bump (){
+    # 1. Verify whether the branch is merged to the origin main branch before bumping the version.
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "$current_branch" != "main" ]] && ! git merge-base --is-ancestor "$current_branch" origin/main; then
+        echo "Branch $current_branch is not merged into origin/main. Aborting version bump."
+        return 1
+    elif [[ "$current_branch" == "main" ]]; then
+        echo "Do not bump the version directly on the main branch. Please git fetch/pull instead. Aborting version bump."
+        return 1
+    fi
+    # If no arguments simply read the pyproject.toml for the current Sage version and bump the last component of the version number.
+    if [[ -z "$1" ]]; then
+        current_version=$(grep -Po '(?<=^version = ")[^"]*' pyproject.toml)
+        IFS='.' read -r -a version_parts <<< "$current_version"
+        ((version_parts[2]++))
+        new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+        #$ sed -i "s/^version = \".*\"/version = \"$new_version\"/" pyproject.toml
+        #$ uv lock
+        echo "Bumped Sage version to: $new_version"
+    fi
+}
