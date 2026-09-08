@@ -1,0 +1,66 @@
+# ~/.bashrc_lpc_functions
+# ──────────────────────────────────────────
+# [OEA] SSL profile management for different environments (uv, poetry, etc.)
+# ──────────────────────────────────────────
+ssl_profile() {
+
+    # Local variables for client and CA certificates:
+    local CLIENT_CERT="$HOME/.certs/$USER.crt"
+    local CA_CERT="/etc/ssl/certs/ca-certificates.crt"
+    
+    case "$1" in
+        uv)
+            export SSL_CERT_FILE="$CA_CERT"
+            echo "SSL profile set to 'uv' (SSL_CERT_FILE=$CA_CERT)"
+            ;;
+        poetry)
+            export SSL_CERT_FILE="$CLIENT_CERT"
+            echo "SSL profile set to 'poetry' (SSL_CERT_FILE=$CLIENT_CERT)"
+            ;;
+        show|status)
+            echo
+            echo "  Current SSL profile status:"
+            echo "    SSL_CERT_FILE=${SSL_CERT_FILE:-<not set>}"
+            echo "    REQUESTS_CA_BUNDLE=${REQUESTS_CA_BUNDLE:-<not set>}"
+            echo "    ROOT_CERT=${ROOT_CERT:-<not set>}"
+            echo "    SSL_CLIENT_CERT=${SSL_CLIENT_CERT:-<not set>}"
+            echo "    SSL_KEY_FILE=${SSL_KEY_FILE:-<not set>}"
+            ;;
+        clear|unset)
+            unset SSL_CERT_FILE
+            echo "SSL_CERT_FILE unset"
+            ;;
+        default)
+            # Default values:
+            echo "  Setting default SSL profile values:"
+            export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+            echo "    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt"
+            export ROOT_CERT=/etc/ssl/certs/ca-certificates.crt
+            echo "    ROOT_CERT=/etc/ssl/certs/ca-certificates.crt"
+            export SSL_CERT_FILE=$HOME/.certs/$USER.pem
+            echo "    SSL_CERT_FILE=$HOME/.certs/$USER.pem"
+            export SSL_CLIENT_CERT=$HOME/.certs/$USER.pem
+            echo "    SSL_CLIENT_CERT=$HOME/.certs/$USER.pem"
+            export SSL_KEY_FILE=$HOME/.certs/$USER.key
+            echo "    SSL_KEY_FILE=$HOME/.certs/$USER.key"
+            ;;
+        *)
+            echo "Usage: ssl_profile <profile>"
+            echo ""
+            echo "Profiles:"
+            echo "  uv      - Use CA cert ($CA_CERT)"
+            echo "  poetry  - Use client cert ($CLIENT_CERT)"
+            echo "  show    - Display current SSL_CERT_FILE"
+            echo "  clear   - Unset SSL_CERT_FILE"
+            echo "  default - Set default values:"
+            echo "    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt"
+            echo "    ROOT_CERT=/etc/ssl/certs/ca-certificates.crt"
+            echo "    SSL_CERT_FILE=$HOME/.certs/$USER.pem"
+            echo "    SSL_CLIENT_CERT=$HOME/.certs/$USER.pem"
+            echo "    SSL_KEY_FILE=$HOME/.certs/$USER.key"
+
+            ssl_profile status
+            return 1
+            ;;
+    esac
+} 
